@@ -306,7 +306,7 @@ describe('Aave credit delegation', () => {
 
                       describe('when the lender withdraws collateral', () => {
                         let balanceBefore;
-                        let amountToWithdraw; 
+                        let amountToWithdraw;
 
                         before('record the lenders balance', async () => {
                           balanceBefore = await depositToken.balanceOf(lender.address);
