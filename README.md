@@ -41,7 +41,7 @@ _NOTE_: Additional interfaces can be created at will by specifying addresses and
 
 https://docs.aave.com/developers/v/2.0/the-core-protocol/lendingpool
 
-### INSTRUCTIONS: Credit delegation on Mainnet via Etherscan
+### STEP BY STEP INSTRUCTIONS: Credit delegation on Mainnet via Etherscan
 
 1. Verify the validity of the credit delegation parameters
 	* Automated: as described in "Validating a credit delegation pair" using unit tests
@@ -54,6 +54,8 @@ https://docs.aave.com/developers/v/2.0/the-core-protocol/lendingpool
 9. Use [app.aave.com](https://app.aave.com) to borrow as `borrower`
 
 ### Validating a credit delegation pair using unit tests
+
+![unit-tests](./imgs/unit-tests.png)
 
 Clone and install the repo
 
