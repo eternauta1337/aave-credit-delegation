@@ -12,7 +12,9 @@ It allows you to validate that a given collateral/loan pair can be used for cred
 * DAI: https://oneclickdapp.com/samba-mars/
 * dsDAI: https://oneclickdapp.com/helena-austin/
 
-##### Addresses:
+_NOTE_: Additional interfaces can be created at will by specifying addresses and ABIs at `artifacts/contracts/interfaces/`
+
+##### Mainnet addresses:
 * LendingPool: 0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9
 * DataProvider: 0x057835Ad21a177dbdd3090bB1CAE03EaCF78Fc6d
 * dsDAI: 0x778A13D3eeb110A4f7bb6529F99c000119a08E92
@@ -36,8 +38,9 @@ https://docs.aave.com/developers/v/2.0/the-core-protocol/lendingpool
 2. Use [app.aave.com](https://app.aave.com) to deposit the desired collateral as `lender`
 3. Use Etherescan for `DataProvider.getReserveTokensAddresses(asset: <address of the token to delegate>)` to identify the associated debt token
 4. From the previous point, use `stableDebtTokenAddress` or `variableDebtTokenAddress` depending on your desired interest rate model, then click on the address to be able to interact with the contract via Etherscan
-7. Use `DebtToken.approveDelegation(delegatee: <credit delegation beneficiary>, amount: <amount of credit to approve>)`. If the associated DebtToken doesn't have verified sources, or doesn't have its proxy properly set up in Etherscan, build a UI with oneclickdapp, as in "Simulating credit delegation with a fork"
-8. Use [app.aave.com](https://app.aave.com) to borrow as `borrower`
+7. Use `DebtToken.approveDelegation(delegatee: <credit delegation beneficiary>, amount: <amount of credit to approve>)`. If the associated DebtToken doesn't have verified sources, or doesn't have its proxy properly set up in Etherscan, build a UI with oneclickdapp using interfaces from `artifacts/contracts/interfaces`
+8. Use `DebtToken.borrowAllowance(fromUser: <lender>, toUser: <borrower>)` to verify that `borrow` has been approved for delegated credit
+9. Use [app.aave.com](https://app.aave.com) to borrow as `borrower`
 
 ### Validating a credit delegation pair using unit tests
 
@@ -51,7 +54,7 @@ $ npm install
 
 Copy `.env.sample` to `.env` and specify your Infura private key, or Ethereum mainnet provider url. This will be used for forking mainnet and running simulations/checks against the fork.
 
-To validate a pair, use `test/CreditDelegation.test.js` to enter the desired collateral/loan pair, amounts, and interest model type, and then run the tests.
+To validate a pair, edit `test/CreditDelegation.test.js` to enter the desired collateral/loan pair, amounts, and interest model type, and then run the tests.
 
 This will start a local fork of mainnet and simulate the credit delegation process with the specified parameters.
 
