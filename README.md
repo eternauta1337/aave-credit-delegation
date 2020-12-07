@@ -4,6 +4,17 @@ This project is intended to be used as a tool/reference for Aave v2 credit deleg
 
 It allows you to validate that a given collateral/loan pair can be used for credit delegation, provides instructions for performing the delegation via direct contract interaction, and provides some tools for simulating the delegation via forking.
 
+### System overview
+
+![credit-delegation](./imgs/credit-delegation.png)
+
+1. Owner deposits collateral in Aave via its LendingPool
+2. Owner uses the data provider contract to retrieve the associated DebtToken for the borrower's desired asset to borrow
+3. Owner interacts with the DebtToken contract to approve the borrower to take out a given amount of credit on the asset
+4. Borrower borrows in Aave via its LendingPool increasing the Owner's `totalDebtETH`
+5. Eventually, Borrower repays loan, decreasing the Owner's `totalDebtETH`
+6. Eventually, Owner withdraws collateral from Aave
+
 ### Resources
 
 ##### Oneclickdapp interfaces:
@@ -29,17 +40,6 @@ _NOTE_: Additional interfaces can be created at will by specifying addresses and
 ##### Aave documentation:
 
 https://docs.aave.com/developers/v/2.0/the-core-protocol/lendingpool
-
-### System overvide
-
-![credit-delegation](./imgs/credit-delegation.png)
-
-1. Owner deposits collateral in Aave via its LendingPool
-2. Owner uses the data provider contract to retrieve the associated DebtToken for the borrower's desired asset to borrow
-3. Owner interacts with the DebtToken contract to approve the borrower to take out a given amount of credit on the asset
-4. Borrower borrows in Aave via its LendingPool increasing the Owner's `totalDebtETH`
-5. Eventually, Borrower repays loan, decreasing the Owner's `totalDebtETH`
-6. Eventually, Owner withdraws collateral from Aave
 
 ### INSTRUCTIONS: Credit delegation on Mainnet via Etherscan
 
