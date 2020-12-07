@@ -13,6 +13,17 @@ describe('Aave credit delegation', () => {
 
   let lender, borrower, someone;
 
+  const testPairs = [];
+  // testPairs.push({ depositAsset: 'DAI', loanAsset: 'DAI', deposit: '50000', borrow: '35000', variable: false });
+  // testPairs.push({ depositAsset: 'DAI', loanAsset: 'DAI', deposit: '50000', borrow: '35000', variable: true });
+  // testPairs.push({ depositAsset: 'DAI', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: false });
+  // testPairs.push({ depositAsset: 'DAI', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: true });
+  testPairs.push({ depositAsset: 'WETH', loanAsset: 'DAI', deposit: '100', borrow: '35000', variable: false });
+  // testPairs.push({ depositAsset: 'WETH', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: true });
+  // testPairs.push({ depositAsset: 'sUSD', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: false });
+  // testPairs.push({ depositAsset: 'sUSD', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: true });
+  // testPairs.push({ depositAsset: 'WETH', loanAsset: 'sUSD', deposit: '100', borrow: '35000', variable: true });
+
 	before('connect to signers', async () => {
     ([_, lender, borrower, someone] = await ethers.getSigners());
 	});
@@ -43,7 +54,7 @@ describe('Aave credit delegation', () => {
       await restoreSnapshot(snapshotId);
     });
 
-    describe(`when using ${ethers.utils.formatEther(depositAmount)} ${depositAsset} as collateral to loan ${ethers.utils.formatEther(delegatedAmount)} ${loanAsset} with ${variable ? 'variable' : 'stable'} interest`, () => {
+    describe(`when using ${ethers.utils.formatEther(depositAmount)} ${depositAsset} as collateral to delegate ${ethers.utils.formatEther(delegatedAmount)} ${loanAsset} of credit, with ${variable ? 'variable' : 'stable'} interest`, () => {
       before('connect with tokens', async () => {
          depositToken = await ethers.getContractAt('IERC20', depositAssetAddress);
          loanToken = await ethers.getContractAt('IERC20', loanAssetAddress);
@@ -335,17 +346,6 @@ describe('Aave credit delegation', () => {
       });
     });
   }
-
-  const testPairs = [];
-  // testPairs.push({ depositAsset: 'DAI', loanAsset: 'DAI', deposit: '50000', borrow: '35000', variable: false });
-  // testPairs.push({ depositAsset: 'DAI', loanAsset: 'DAI', deposit: '50000', borrow: '35000', variable: true });
-  // testPairs.push({ depositAsset: 'DAI', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: false });
-  // testPairs.push({ depositAsset: 'DAI', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: true });
-  // testPairs.push({ depositAsset: 'WETH', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: false });
-  // testPairs.push({ depositAsset: 'WETH', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: true });
-  // testPairs.push({ depositAsset: 'sUSD', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: false });
-  // testPairs.push({ depositAsset: 'sUSD', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: true });
-  testPairs.push({ depositAsset: 'WETH', loanAsset: 'sUSD', deposit: '100', borrow: '30000', variable: true });
 
   testPairs.map(({ depositAsset, loanAsset, deposit, borrow, variable }) => {
     itSuccesfullyDelegatesWith({
