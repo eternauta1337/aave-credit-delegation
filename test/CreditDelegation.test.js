@@ -289,6 +289,7 @@ describe('Aave credit delegation', () => {
     });
   }
 
+  // DAI -> DAI
   itSuccesfullyDelegatesWith({
     depositAsset: 'DAI',
     loanAsset: 'DAI',
@@ -304,11 +305,52 @@ describe('Aave credit delegation', () => {
     variable: true,
   });
 
-  // sUSD not enabled as collateral in Aave
+  // DAI -> sUSD
+  itSuccesfullyDelegatesWith({
+    depositAsset: 'DAI',
+    loanAsset: 'sUSD',
+    depositAmount: ethers.utils.parseEther('50000'),
+    delegatedAmount: ethers.utils.parseEther('35000'),
+    variable: false,
+  });
+  itSuccesfullyDelegatesWith({
+    depositAsset: 'DAI',
+    loanAsset: 'sUSD',
+    depositAmount: ethers.utils.parseEther('50000'),
+    delegatedAmount: ethers.utils.parseEther('35000'),
+    variable: true,
+  });
+
+  // WETH -> sUSD
+  itSuccesfullyDelegatesWith({
+    depositAsset: 'WETH',
+    loanAsset: 'sUSD',
+    depositAmount: ethers.utils.parseEther('85'),
+    delegatedAmount: ethers.utils.parseEther('35000'),
+    variable: false,
+  });
+  itSuccesfullyDelegatesWith({
+    depositAsset: 'WETH',
+    loanAsset: 'sUSD',
+    depositAmount: ethers.utils.parseEther('85'),
+    delegatedAmount: ethers.utils.parseEther('35000'),
+    variable: true,
+  });
+
+  // sUSD -> sUSD
+  // NOTE: Atm sUSD not enabled as collateral in Aave v2
   // itSuccesfullyDelegatesWith({
   //   depositAsset: 'sUSD',
   //   loanAsset: 'sUSD',
   //   depositAmount: ethers.utils.parseEther('50000'),
   //   delegatedAmount: ethers.utils.parseEther('35000'),
+  //   variable: false,
+  // });
+  // itSuccesfullyDelegatesWith({
+  //   depositAsset: 'sUSD',
+  //   loanAsset: 'sUSD',
+  //   depositAmount: ethers.utils.parseEther('50000'),
+  //   delegatedAmount: ethers.utils.parseEther('35000'),
+  //   variable: true,
   // });
 });
