@@ -231,7 +231,7 @@ describe('Aave credit delegation', () => {
 
                 describe(`when the borrower approves the pool to spend its ${loanAsset}`, () => {
                   before('borrower provides allowance', async () => {
-                    loanToken = depositToken.connect(borrower);
+                    loanToken = loanToken.connect(borrower);
 
                     await loanToken.approve(lendingPool.address, ethers.utils.parseEther('1000000'));
                   });
@@ -279,13 +279,13 @@ describe('Aave credit delegation', () => {
                     });
 
                     describe('when the borrower repays the entire loan', () => {
-                      before('repay 50% of the loan', async () => {
+                      before('repay 100% of the loan', async () => {
                         lendingPool = lendingPool.connect(borrower);
 
                         await lendingPool.repay(
                           loanAssetAddress,
                           delegatedAmount.div(ethers.BigNumber.from('2')),
-                          variable ? 2 : 1,
+                          rateMode,
                           lender.address
                         );
                       });
@@ -314,7 +314,8 @@ describe('Aave credit delegation', () => {
                         before('lender withdraws all collateral', async () => {
                           lendingPool = lendingPool.connect(lender);
 
-                          await lendingPool.withdraw(depositAssetAddress, depositAmount, lender.address);
+                          // const max = ethers.BigNumber.from('0xffffffffffffffffffffffffffffffffffffffff');
+                          await lendingPool.withdraw(depositAssetAddress, delegatedAmount.mul(ethers.utils.parseEther('0.5')), lender.address);
                         });
 
                         it('credited the lenders balance', async () => {
@@ -334,67 +335,24 @@ describe('Aave credit delegation', () => {
     });
   }
 
-  // DAI -> DAI
-  itSuccesfullyDelegatesWith({
-    depositAsset: 'DAI',
-    loanAsset: 'DAI',
-    depositAmount: ethers.utils.parseEther('50000'),
-    delegatedAmount: ethers.utils.parseEther('35000'),
-    variable: false,
-  });
-  itSuccesfullyDelegatesWith({
-    depositAsset: 'DAI',
-    loanAsset: 'DAI',
-    depositAmount: ethers.utils.parseEther('50000'),
-    delegatedAmount: ethers.utils.parseEther('35000'),
-    variable: true,
-  });
+  const testPairs = [];
+  // testPairs.push({ depositAsset: 'DAI', loanAsset: 'DAI', deposit: '50000', borrow: '35000', variable: false });
+  // testPairs.push({ depositAsset: 'DAI', loanAsset: 'DAI', deposit: '50000', borrow: '35000', variable: true });
+  // testPairs.push({ depositAsset: 'DAI', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: false });
+  // testPairs.push({ depositAsset: 'DAI', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: true });
+  // testPairs.push({ depositAsset: 'WETH', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: false });
+  // testPairs.push({ depositAsset: 'WETH', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: true });
+  // testPairs.push({ depositAsset: 'sUSD', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: false });
+  // testPairs.push({ depositAsset: 'sUSD', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: true });
+  testPairs.push({ depositAsset: 'WETH', loanAsset: 'sUSD', deposit: '100', borrow: '30000', variable: true });
 
-  // DAI -> sUSD
-  itSuccesfullyDelegatesWith({
-    depositAsset: 'DAI',
-    loanAsset: 'sUSD',
-    depositAmount: ethers.utils.parseEther('50000'),
-    delegatedAmount: ethers.utils.parseEther('35000'),
-    variable: false,
-  });
-  itSuccesfullyDelegatesWith({
-    depositAsset: 'DAI',
-    loanAsset: 'sUSD',
-    depositAmount: ethers.utils.parseEther('60000'),
-    delegatedAmount: ethers.utils.parseEther('35000'),
-    variable: true,
-  });
-
-  // WETH -> sUSD
-  itSuccesfullyDelegatesWith({
-    depositAsset: 'WETH',
-    loanAsset: 'sUSD',
-    depositAmount: ethers.utils.parseEther('100'),
-    delegatedAmount: ethers.utils.parseEther('35000'),
-    variable: false,
-  });
-  itSuccesfullyDelegatesWith({
-    depositAsset: 'WETH',
-    loanAsset: 'sUSD',
-    depositAmount: ethers.utils.parseEther('100'),
-    delegatedAmount: ethers.utils.parseEther('35000'),
-    variable: true,
-  });
-
-  // sUSD -> sUSD
-  itSuccesfullyDelegatesWith({
-    depositAsset: 'sUSD',
-    loanAsset: 'sUSD',
-    depositAmount: ethers.utils.parseEther('50000'),
-    delegatedAmount: ethers.utils.parseEther('35000'),
-    variable: false,
-  });
-  itSuccesfullyDelegatesWith({
-    depositAsset: 'sUSD',
-    loanAsset: 'sUSD',
-    depositAmount: ethers.utils.parseEther('50000'),
-    delegatedAmount: ethers.utils.parseEther('35000'),
-    variable: true,
+  testPairs.map(({ depositAsset, loanAsset, deposit, borrow, variable }) => {
+    itSuccesfullyDelegatesWith({
+      depositAsset,
+      loanAsset,
+      depositAmount: ethers.utils.parseEther(deposit),
+      delegatedAmount: ethers.utils.parseEther(borrow),
+      variable
+    });
   });
 });
