@@ -1,31 +1,10 @@
 ## Aave Credit Delegation
 
-This project is intended to be used as a tool for Aave v2 credit delegation, until [app.aave.com](https://app.aave.com) supports this feature in its UI.
+This project is intended to be used as a tool/reference for Aave v2 credit delegation, until [app.aave.com](https://app.aave.com) supports this feature in its UI.
 
 It allows you to validate that a given collateral/loan pair can be used for credit delegation, provides instructions for performing the delegation via direct contract interaction, and provides some tools for simulating the delegation via forking.
 
-#### Set up
-
-1. Clone and install the repo
-
-```
-$ git clone clone git@github.com:ajsantander/aave-credit-delegation.git
-$ cd aave-credit-delegation
-$ npm install
-```
-
-1. Copy `.env.sample` to `.env` and specify your Infura private key, or Ethereum mainnet provider url. This will be used for forking mainnet and running simulations/checks against the fork.
-
-#### Use credit delegation on Mainnet
-
-1. Verify the validity of the credit delegation parameters as described in "Validating a pair" using unit tests
-2. Use [app.aave.com](https://app.aave.com) to deposit the desired collateral as `lender`
-3. Use Etherescan for `DataProvider.getReserveTokensAddresses(asset: <address of the token to delegate>)` to identify the associated debt token
-4. From the previous point, use `stableDebtTokenAddress` or `variableDebtTokenAddress` depending on your desired interest rate model, then click on the address
-5. Use `DebtToken.approveDelegation(delegatee: <credit delegation beneficiary>, amount: <amount of credit to approve>)`. If the associated DebtToken doesn't have verified sources, or doesn't have its proxy properly set up in Etherscan, build a UI with oneclickdapp, as in "Simulating credit delegation with a fork"
-2. Use [app.aave.com](https://app.aave.com) to borrow as `borrower`
-
-#### Resources
+### Resources
 
 ##### Oneclickdapp interfaces:
 * LendingPool: https://oneclickdapp.com/monica-axiom/
@@ -49,20 +28,40 @@ $ npm install
 
 https://docs.aave.com/developers/v/2.0/the-core-protocol/lendingpool
 
-#### Validating a pair
+### Use credit delegation on Mainnet via Etherscan
+
+1. Verify the validity of the credit delegation parameters
+	* Automated: as described in "Validating a credit delegation pair" using unit tests
+	* Manually: In [app.aave.com](https://app.aave.com), make sure that the deposit asset is available for use as collateral, and that the borrow asset is available for stable/variable borrow, and has sufficient liquidity
+2. Use [app.aave.com](https://app.aave.com) to deposit the desired collateral as `lender`
+3. Use Etherescan for `DataProvider.getReserveTokensAddresses(asset: <address of the token to delegate>)` to identify the associated debt token
+4. From the previous point, use `stableDebtTokenAddress` or `variableDebtTokenAddress` depending on your desired interest rate model, then click on the address to be able to interact with the contract via Etherscan
+7. Use `DebtToken.approveDelegation(delegatee: <credit delegation beneficiary>, amount: <amount of credit to approve>)`. If the associated DebtToken doesn't have verified sources, or doesn't have its proxy properly set up in Etherscan, build a UI with oneclickdapp, as in "Simulating credit delegation with a fork"
+8. Use [app.aave.com](https://app.aave.com) to borrow as `borrower`
+
+### Validating a credit delegation pair using unit tests
+
+Clone and install the repo
+
+```
+$ git clone clone git@github.com:ajsantander/aave-credit-delegation.git
+$ cd aave-credit-delegation
+$ npm install
+```
+
+Copy `.env.sample` to `.env` and specify your Infura private key, or Ethereum mainnet provider url. This will be used for forking mainnet and running simulations/checks against the fork.
 
 To validate a pair, use `test/CreditDelegation.test.js` to enter the desired collateral/loan pair, amounts, and interest model type, and then run the tests.
 
 This will start a local fork of mainnet and simulate the credit delegation process with the specified parameters.
 
-To run the simulation:
+Edit `testPairs` in `test/CreditDelegation.test.js` with your desired parameters
 
-1. Edit `testPairs` in `test/CreditDelegation.test.js` with your desired parameters
-2. Run `npm test`
+Run `npm test`
 
 If any test is skipped or fails, credit delegation may not be available for your desired parameters.
 
-#### Simulating credit delegation with a fork
+### Simulating credit delegation with a fork using oneclickdapp
 
 When using a fork of mainnet, Etherscan can be used to write to the fork, but not read, since it will always connect to mainnet while reading. Thus, the method described below uses [oneclickdapp.com](https://oneclickdapp.com) to provide a user interface for interacting with the contracts via a fork.
 
