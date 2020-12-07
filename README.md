@@ -17,25 +17,25 @@ It allows you to validate that a given collateral/loan pair can be used for cred
 
 ### Resources
 
-##### Oneclickdapp interfaces:
-* LendingPool: https://oneclickdapp.com/monica-axiom/
-* DataProvider: https://oneclickdapp.com/juice-empty/
-* DAI: https://oneclickdapp.com/samba-mars/
-* dsDAI: https://oneclickdapp.com/helena-austin/
-
-_NOTE_: Additional interfaces can be created at will by specifying addresses and ABIs at `artifacts/contracts/interfaces/`
-
 ##### Mainnet addresses:
-* LendingPool: 0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9
-* DataProvider: 0x057835Ad21a177dbdd3090bB1CAE03EaCF78Fc6d
-* dsDAI: 0x778A13D3eeb110A4f7bb6529F99c000119a08E92
-* DAI: 0x6B175474E89094C44Da98b954EedeAC495271d0F
+* LendingPool: `0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9`
+* DataProvider: `0x057835Ad21a177dbdd3090bB1CAE03EaCF78Fc6d`
+* dsDAI: `0x778A13D3eeb110A4f7bb6529F99c000119a08E92`
+* DAI: `0x6B175474E89094C44Da98b954EedeAC495271d0F`
 
 ##### Etherscan links
 * LendingPool: https://etherscan.io/address/0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9#readProxyContract
 * DataProvider: https://etherscan.io/address/0x057835Ad21a177dbdd3090bB1CAE03EaCF78Fc6d#readContract
 * dsDAI: https://etherscan.io/address/0x778A13D3eeb110A4f7bb6529F99c000119a08E92#readProxyContract
 * DAI: https://etherscan.io/address/0x6B175474E89094C44Da98b954EedeAC495271d0F
+
+##### Backup oneclickdapp interfaces:
+* LendingPool: https://oneclickdapp.com/monica-axiom/
+* DataProvider: https://oneclickdapp.com/juice-empty/
+* DAI: https://oneclickdapp.com/samba-mars/
+* dsDAI: https://oneclickdapp.com/helena-austin/
+
+_NOTE_: Additional interfaces can be created at will by specifying addresses and ABIs at `artifacts/contracts/interfaces/`
 
 ##### Aave documentation:
 
@@ -53,7 +53,7 @@ https://docs.aave.com/developers/v/2.0/the-core-protocol/lendingpool
 8. Use `DebtToken.borrowAllowance(fromUser: <lender>, toUser: <borrower>)` to verify that `borrow` has been approved for delegated credit
 9. Use [app.aave.com](https://app.aave.com) to borrow as `borrower`
 
-### Validating a credit delegation pair using unit tests
+### Validating a credit delegation pair using unit tests on mainnet
 
 ![unit-tests](./imgs/unit-tests.png)
 
