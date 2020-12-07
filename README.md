@@ -77,6 +77,8 @@ Run `npm test`
 
 If any test is skipped or fails, credit delegation may not be available for your desired parameters.
 
+![unit-bad](./imgs/unit-bad.png)
+
 ### Simulating credit delegation with a fork using oneclickdapp
 
 When using a fork of mainnet, Etherscan can be used to write to the fork, but not read, since it will always connect to mainnet while reading. Thus, the method described below uses [oneclickdapp.com](https://oneclickdapp.com) to provide a user interface for interacting with the contracts via a fork.
