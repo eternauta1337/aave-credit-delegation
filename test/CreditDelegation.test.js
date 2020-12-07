@@ -1,4 +1,5 @@
-const { expect } = require("chai");
+const { expect } = require('chai');
+const { yellow } = require('chalk');
 
 const addresses = require('../src/addresses');
 const {
@@ -29,7 +30,7 @@ describe('Aave credit delegation', () => {
 	  variable,
 	}) => {
 	  const depositAssetAddress = addresses.tokens[depositAsset];
-	  const loanAssetAddress = addresses.tokens[depositAsset];
+	  const loanAssetAddress = addresses.tokens[loanAsset];
     const rateMode = variable ? 2 : 1;
 
     let snapshotId;
@@ -48,10 +49,54 @@ describe('Aave credit delegation', () => {
          loanToken = await ethers.getContractAt('IERC20', loanAssetAddress);
       });
 
-      it(`validates that ${depositAsset} can be used as collateral`, async () => {
-        const assetData = await dataProvider.getReserveConfigurationData(depositToken.address);
+      before(`validate that ${depositAsset} can be used as collateral and ${loanAsset} can be borrowed`, async function() {
+        let assetData = await dataProvider.getReserveConfigurationData(depositToken.address);
 
-        expect(assetData.usageAsCollateralEnabled).to.be.true;
+        let canBeUsedAsCollateral = true;
+        if (!assetData.usageAsCollateralEnabled) {
+          console.log(yellow(`      > ${depositAsset} is not enabled for use as collateral`));
+          canBeUsedAsCollateral = false;
+        }
+        if (!assetData.isActive) {
+          console.log(yellow(`      > ${depositAsset} is not active`));
+          canBeUsedAsCollateral = false;
+        };
+        if (assetData.isFrozen) {
+          console.log(yellow(`      > ${depositAsset} is frozen`));
+          canBeUsedAsCollateral = false;
+        };
+
+        assetData = await dataProvider.getReserveConfigurationData(loanToken.address);
+
+        let canBeBorrowed = true;
+        if (!assetData.borrowingEnabled) {
+          console.log(yellow(`      > ${loanAsset} is not enabled for borrowing`));
+          canBeBorrowed = false;
+        };
+        if (!variable && !assetData.stableBorrowRateEnabled) {
+          console.log(yellow(`      > ${loanAsset} is not enabled for stable borrowing`));
+          canBeBorrowed = false;
+        };
+        if (!assetData.isActive) {
+          console.log(yellow(`      > ${loanAsset} is not active`));
+          canBeBorrowed = false;
+        };
+        if (assetData.isFrozen) {
+          console.log(yellow(`      > ${loanAsset} is frozen`));
+          canBeBorrowed = false;
+        };
+
+        assetData = await dataProvider.getReserveData(loanToken.address);
+        if (assetData.availableLiquidity.lt(delegatedAmount)) {
+          console.log(yellow(`      > liquidity for ${loanAsset} is only ${ethers.utils.formatEther(assetData.availableLiquidity)}`));
+          canBeBorrowed = false;
+        }
+
+        if (!canBeUsedAsCollateral || !canBeBorrowed) {
+          console.log(yellow(`      > the ${depositAsset} / ${loanAsset} pair is not available for credit delegation, skipping tests...`));
+
+          this.skip();
+        }
       });
 
       describe(`when the lender has ${ethers.utils.formatEther(depositAmount)} ${depositAsset}`, () => {
@@ -316,7 +361,7 @@ describe('Aave credit delegation', () => {
   itSuccesfullyDelegatesWith({
     depositAsset: 'DAI',
     loanAsset: 'sUSD',
-    depositAmount: ethers.utils.parseEther('50000'),
+    depositAmount: ethers.utils.parseEther('60000'),
     delegatedAmount: ethers.utils.parseEther('35000'),
     variable: true,
   });
@@ -325,32 +370,31 @@ describe('Aave credit delegation', () => {
   itSuccesfullyDelegatesWith({
     depositAsset: 'WETH',
     loanAsset: 'sUSD',
-    depositAmount: ethers.utils.parseEther('85'),
+    depositAmount: ethers.utils.parseEther('100'),
     delegatedAmount: ethers.utils.parseEther('35000'),
     variable: false,
   });
   itSuccesfullyDelegatesWith({
     depositAsset: 'WETH',
     loanAsset: 'sUSD',
-    depositAmount: ethers.utils.parseEther('85'),
+    depositAmount: ethers.utils.parseEther('100'),
     delegatedAmount: ethers.utils.parseEther('35000'),
     variable: true,
   });
 
   // sUSD -> sUSD
-  // NOTE: Atm sUSD not enabled as collateral in Aave v2
-  // itSuccesfullyDelegatesWith({
-  //   depositAsset: 'sUSD',
-  //   loanAsset: 'sUSD',
-  //   depositAmount: ethers.utils.parseEther('50000'),
-  //   delegatedAmount: ethers.utils.parseEther('35000'),
-  //   variable: false,
-  // });
-  // itSuccesfullyDelegatesWith({
-  //   depositAsset: 'sUSD',
-  //   loanAsset: 'sUSD',
-  //   depositAmount: ethers.utils.parseEther('50000'),
-  //   delegatedAmount: ethers.utils.parseEther('35000'),
-  //   variable: true,
-  // });
+  itSuccesfullyDelegatesWith({
+    depositAsset: 'sUSD',
+    loanAsset: 'sUSD',
+    depositAmount: ethers.utils.parseEther('50000'),
+    delegatedAmount: ethers.utils.parseEther('35000'),
+    variable: false,
+  });
+  itSuccesfullyDelegatesWith({
+    depositAsset: 'sUSD',
+    loanAsset: 'sUSD',
+    depositAmount: ethers.utils.parseEther('50000'),
+    delegatedAmount: ethers.utils.parseEther('35000'),
+    variable: true,
+  });
 });
