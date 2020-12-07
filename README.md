@@ -81,6 +81,8 @@ If any test is skipped or fails, credit delegation may not be available for your
 
 When using a fork of mainnet, Etherscan can be used to write to the fork, but not read, since it will always connect to mainnet while reading. Thus, the method described below uses [oneclickdapp.com](https://oneclickdapp.com) to provide a user interface for interacting with the contracts via a fork.
 
+![oneclick](./imgs/oneclick.png)
+
 1. Start a fork of mainnet with `npm run start-fork`
 2. Add a "Mainnet (fork)" network to Metamask, with url `http://0.0.0.0:8545` and network id `1`
 3. Select and/or set up two test addresses in Metamask, `lender` and `borrower`
