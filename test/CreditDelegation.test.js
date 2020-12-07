@@ -306,6 +306,7 @@ describe('Aave credit delegation', () => {
 
                       describe('when the lender withdraws collateral', () => {
                         let balanceBefore;
+                        let amountToWithdraw; 
 
                         before('record the lenders balance', async () => {
                           balanceBefore = await depositToken.balanceOf(lender.address);
@@ -314,14 +315,14 @@ describe('Aave credit delegation', () => {
                         before('lender withdraws all collateral', async () => {
                           lendingPool = lendingPool.connect(lender);
 
-                          // const max = ethers.BigNumber.from('0xffffffffffffffffffffffffffffffffffffffff');
-                          await lendingPool.withdraw(depositAssetAddress, delegatedAmount.mul(ethers.utils.parseEther('0.5')), lender.address);
+                          amountToWithdraw = depositAmount.sub(ethers.utils.parseEther('1'));
+                          await lendingPool.withdraw(depositAssetAddress, amountToWithdraw, lender.address);
                         });
 
                         it('credited the lenders balance', async () => {
                           expect(
                             await depositToken.balanceOf(lender.address)
-                          ).to.be.eq(balanceBefore.add(depositAmount));
+                          ).to.be.eq(balanceBefore.add(amountToWithdraw));
                         });
                       });
                     });
