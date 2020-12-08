@@ -13,6 +13,8 @@ describe('Aave credit delegation', () => {
 
   let lender, borrower, someone;
 
+  let balanceBefore;
+
   const testPairs = [];
   // testPairs.push({ depositAsset: 'DAI', loanAsset: 'DAI', deposit: '50000', borrow: '35000', variable: false });
   // testPairs.push({ depositAsset: 'DAI', loanAsset: 'DAI', deposit: '50000', borrow: '35000', variable: true });
@@ -22,7 +24,6 @@ describe('Aave credit delegation', () => {
   // testPairs.push({ depositAsset: 'WETH', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: true });
   // testPairs.push({ depositAsset: 'sUSD', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: false });
   // testPairs.push({ depositAsset: 'sUSD', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: true });
-  //
   // testPairs.push({ depositAsset: 'WETH', loanAsset: 'sUSD', deposit: '100', borrow: '35000', variable: true });
 
 	before('connect to signers', async () => {
@@ -189,6 +190,32 @@ describe('Aave credit delegation', () => {
                   userData.totalDebtETH
                 ).to.be.lt(ethers.utils.parseEther('0.01'));
               });
+
+              describe('when the lender withdraws collateral before approving credit', () => {
+                before('take snapshot', async () => {
+                  snapshotId = await takeSnapshot();
+                });
+
+                after('restore snapshot', async () => {
+                  await restoreSnapshot(snapshotId);
+                });
+
+                before('record current values', async () => {
+                  balanceBefore = await depositToken.balanceOf(lender.address);
+                });
+
+                before('withdraw collateral', async () => {
+                  lendingPool = lendingPool.connect(lender);
+
+                  await lendingPool.withdraw(depositAssetAddress, depositAmount.div(ethers.utils.parseEther('2')), lender.address);
+                });
+
+                it('shows an increase in the lenders deposit token balance', async () => {
+                  expect(
+                    await depositToken.balanceOf(lender.address)
+                  ).to.be.gt(balanceBefore);
+                });
+              });
             });
 
             describe(`when the lender approves ${ethers.utils.formatEther(delegatedAmount)} ${loanAsset} of credit to the borrower`, () => {
@@ -241,6 +268,24 @@ describe('Aave credit delegation', () => {
                   ).to.be.equal(delegatedAmount);
                 });
 
+                describe('when the lender attempts to withdraw collateral before the borrower repays the loan', () => {
+                  before('take snapshot', async () => {
+                    snapshotId = await takeSnapshot();
+                  });
+
+                  after('restore snapshot', async () => {
+                    await restoreSnapshot(snapshotId);
+                  });
+
+                  it('reverts', async () => {
+                    lendingPool = lendingPool.connect(lender);
+
+                    expect(
+                      lendingPool.withdraw(depositAssetAddress, depositAmount)
+                    ).to.be.reverted;
+                  });
+                });
+
                 describe(`when the borrower approves the pool to spend its ${loanAsset}`, () => {
                   before('borrower provides allowance', async () => {
                     loanToken = loanToken.connect(borrower);
@@ -256,7 +301,6 @@ describe('Aave credit delegation', () => {
 
                   describe('when the borrower repays 50% of the loan', () => {
                     let debtBefore;
-                    let balanceBefore;
 
                     before('record the initial values', async () => {
                       const userData = await lendingPool.getUserAccountData(lender.address);

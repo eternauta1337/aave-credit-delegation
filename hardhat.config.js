@@ -8,7 +8,7 @@ module.exports = {
     hardhat: {
       forking: {
         url: process.env.MAINNET_PROVIDER,
-        // blockNumber: 11406154
+        blockNumber: 11409188 // Uncomment for faster development
       }
     },
     local: {
