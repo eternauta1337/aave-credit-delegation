@@ -20,7 +20,7 @@ describe('Aave credit delegation', () => {
   // testPairs.push({ depositAsset: 'DAI', loanAsset: 'DAI', deposit: '50000', borrow: '35000', variable: true });
   // testPairs.push({ depositAsset: 'DAI', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: false });
   // testPairs.push({ depositAsset: 'DAI', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: true });
-  testPairs.push({ depositAsset: 'WETH', loanAsset: 'DAI', deposit: '100', borrow: '35000', variable: false });
+  testPairs.push({ depositAsset: 'WETH', loanAsset: 'sUSD', deposit: '120', borrow: '35000', variable: false });
   // testPairs.push({ depositAsset: 'WETH', loanAsset: 'sUSD', deposit: '100', borrow: '35000', variable: true });
   // testPairs.push({ depositAsset: 'sUSD', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: false });
   // testPairs.push({ depositAsset: 'sUSD', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: true });
@@ -118,8 +118,9 @@ describe('Aave credit delegation', () => {
         };
 
         assetData = await dataProvider.getReserveData(loanToken.address);
+        console.log(gray(`      > ${loanAsset} liquidity: ${ethers.utils.formatEther(assetData.availableLiquidity)}`));
         if (assetData.availableLiquidity.lt(delegatedAmount)) {
-          console.log(yellow(`      > liquidity for ${loanAsset} is only ${ethers.utils.formatEther(assetData.availableLiquidity)}`));
+          console.log(yellow(`      > liquidity for ${loanAsset} is not sufficient`));
           canBeBorrowed = false;
         }
 
