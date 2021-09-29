@@ -19,6 +19,6 @@
     "ethereum-waffle": "^3.2.1",
     "ethers": "^5.0.23",
     "execa": "^5.0.0",
-    "hardhat": "^2.0.4"
+    "hardhat": "^2.6.4"
   }
 }

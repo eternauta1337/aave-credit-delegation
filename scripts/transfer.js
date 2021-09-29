@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 
 const addresses = require('../src/addresses');
-const { impersonateAddress } = require('./src/utils/rpc');
+const { impersonateAddress } = require('../src/utils/rpc');
 
 const asset = 'DAI';
 const amount = ethers.utils.parseEther('50000');
