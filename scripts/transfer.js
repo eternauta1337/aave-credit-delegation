@@ -3,20 +3,23 @@ const chalk = require('chalk');
 const addresses = require('../src/addresses');
 const { impersonateAddress } = require('../src/utils/rpc');
 
-const asset = 'DAI';
-const amount = ethers.utils.parseEther('50000');
+const asset = 'LINK';
+const amount = ethers.utils.parseEther('10000');
 const beneficiary = addresses.users.hardhat1;
 
 async function main() {
+  const holderAddress = addresses.holders[asset];
+  const tokenAddress = addresses.tokens[asset];
+
   console.log(chalk.cyan(
-    `Transferring ${ethers.utils.formatEther(amount)} ${asset} from a large holder to ${beneficiary}...`)
+    `Transferring ${ethers.utils.formatEther(amount)} ${asset} from ${holderAddress} to ${beneficiary}...`)
   );
 
-  const holder = await impersonateAddress(addresses.holders[asset]);
+  const holder = await impersonateAddress(holderAddress);
 
   let token = await ethers.getContractAt(
     'IERC20',
-    addresses.tokens[asset]
+    tokenAddress,
   );
 
   const holderBalance = await token.balanceOf(holder.address);
