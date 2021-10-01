@@ -20,7 +20,7 @@ describe('Aave credit delegation', () => {
   // testPairs.push({ depositAsset: 'DAI', loanAsset: 'DAI', deposit: '50000', borrow: '35000', variable: true });
   // testPairs.push({ depositAsset: 'DAI', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: false });
   // testPairs.push({ depositAsset: 'DAI', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: true });
-  testPairs.push({ depositAsset: 'WETH', loanAsset: 'sUSD', deposit: '120', borrow: '35000', variable: false });
+  testPairs.push({ depositAsset: 'WETH', loanAsset: 'DAI', deposit: '120', borrow: '35000', variable: false });
   // testPairs.push({ depositAsset: 'WETH', loanAsset: 'sUSD', deposit: '100', borrow: '35000', variable: true });
   // testPairs.push({ depositAsset: 'sUSD', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: false });
   // testPairs.push({ depositAsset: 'sUSD', loanAsset: 'sUSD', deposit: '50000', borrow: '35000', variable: true });
